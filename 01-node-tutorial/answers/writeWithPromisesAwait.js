@@ -12,7 +12,7 @@ const writer = async () => {
 
 const reader = async () => {
 	try {
-		const value = await readFile("./temporary/temp.txt");
+		const value = await readFile("./temporary/temp.txt", "utf-8");
 		console.log(value.toString());
 	} catch (error) {
 		console.log("An error occurred: ", error);
