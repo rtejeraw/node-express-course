@@ -18,7 +18,7 @@ app.get("/api/v1/products/:productID", (req, res) => {
 	if (!product) {
 		res.status(404).json({ message: "That product was not found." });
 	}
-	res.json({ products: products.find((item) => item.id === productId) });
+	res.json({ products: product });
 });
 app.get("/api/v1/query", (req, res) => {
 	const limit = parseInt(req.query.limit);
@@ -36,7 +36,7 @@ app.get("/api/v1/query", (req, res) => {
 		return matchSearch && matchFrom && matchTo;
 	});
 
-	if (!filteredProducts) {
+	if (filteredProducts.length === 0) {
 		res.status(404).json({ message: "That product was not found." });
 	}
 	res.json({
