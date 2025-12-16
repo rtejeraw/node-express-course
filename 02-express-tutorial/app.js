@@ -6,19 +6,19 @@ const { products } = require("./data");
 app.use(express.static("./public"));
 
 app.get("/api/v1/test", (req, res) => {
-	res.json({ message: "It worked!" });
+	return res.json({ message: "It worked!" });
 });
 
 app.get("/api/v1/products", (req, res) => {
-	res.json({ products: products });
+	return res.json({ products: products });
 });
 app.get("/api/v1/products/:productID", (req, res) => {
 	const productId = parseInt(req.params.productID);
 	const product = products.find((item) => item.id === productId);
 	if (!product) {
-		res.status(404).json({ message: "That product was not found." });
+		return res.status(404).json({ message: "That product was not found." });
 	}
-	res.json({ products: product });
+	return res.json({ products: product });
 });
 app.get("/api/v1/query", (req, res) => {
 	const limit = parseInt(req.query.limit);
@@ -37,15 +37,15 @@ app.get("/api/v1/query", (req, res) => {
 	});
 
 	if (filteredProducts.length === 0) {
-		res.status(404).json({ message: "That product was not found." });
+		return res.status(404).json({ message: "That product was not found." });
 	}
-	res.json({
+	return res.json({
 		products: limit ? filteredProducts.slice(0, limit) : filteredProducts,
 	});
 });
 
 app.all("*", (req, res) => {
-	res.status(404).send(`
+	return res.status(404).send(`
       <h1>Oops!</h1>
       <p>We can't seem to find the page you are looking for</p>
       <a href="/">back home</a>
