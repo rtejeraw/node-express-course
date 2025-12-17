@@ -2,24 +2,26 @@ const express = require("express");
 const app = express();
 
 const { products } = require("./data");
+const peopleRouter = require("./routes/people.js");
+const productsRouter = require("./routes/products.js");
 
 app.use(express.static("./public"));
+// logger
+app.use((req, res, next) => {
+	console.log(`${req.method} ${req.url} -- ${new Date().toISOString()}`);
+	next();
+});
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.get("/api/v1/test", (req, res) => {
-	return res.json({ message: "It worked!" });
+	res.json({ message: "It worked!" });
 });
 
-app.get("/api/v1/products", (req, res) => {
-	return res.json({ products: products });
-});
-app.get("/api/v1/products/:productID", (req, res) => {
-	const productId = parseInt(req.params.productID);
-	const product = products.find((item) => item.id === productId);
-	if (!product) {
-		return res.status(404).json({ message: "That product was not found." });
-	}
-	return res.json({ products: product });
-});
+app.use("/api/v1/people", peopleRouter);
+
+app.use("/api/v1/products", productsRouter);
+
 app.get("/api/v1/query", (req, res) => {
 	const limit = parseInt(req.query.limit);
 	const search = req.query.search;
@@ -36,16 +38,16 @@ app.get("/api/v1/query", (req, res) => {
 		return matchSearch && matchFrom && matchTo;
 	});
 
-	if (filteredProducts.length === 0) {
+	if (filteredProducts.length === 0)
 		return res.status(404).json({ message: "That product was not found." });
-	}
-	return res.json({
+
+	res.json({
 		products: limit ? filteredProducts.slice(0, limit) : filteredProducts,
 	});
 });
 
 app.all("*", (req, res) => {
-	return res.status(404).send(`
+	res.status(404).send(`
       <h1>Oops!</h1>
       <p>We can't seem to find the page you are looking for</p>
       <a href="/">back home</a>
