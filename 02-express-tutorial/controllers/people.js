@@ -2,7 +2,7 @@ const { people } = require("../data");
 
 const getPeople = (req, res) => {
 	if (req.params.id) {
-		const personId = parseInt(req.params.id);
+		const personId = Number(req.params.id);
 		const person = people.find((x) => x.id === personId);
 		if (!person) {
 			return res.status(404).json({ message: "Person was not found." });
