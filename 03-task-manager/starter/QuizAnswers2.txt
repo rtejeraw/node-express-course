@@ -1,0 +1,10 @@
+1 - asyncWrapper - a middleware function that handles the execution of other asynchronous functions and centralizes exception handling, passing the exceptions via next() to another middleware function responsible for error handling.
+
+2 - const getTask = asyncWrapper(async (req, res, next) => {  
+  const { id: taskID } = req.params;  
+  const task = await Task.findOne({ _id: taskID });  
+  if (!task) {  
+    return next(CreateCustomError(`No task with id : ${taskID}`, 404));
+  }  
+  res.status(200).json({ task });  
+});
